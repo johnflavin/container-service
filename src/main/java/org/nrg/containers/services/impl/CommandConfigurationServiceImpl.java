@@ -1,11 +1,25 @@
 package org.nrg.containers.services.impl;
 
 import org.nrg.containers.model.configuration.CommandConfiguration;
+import org.nrg.containers.model.configuration.CommandConfigurationEntity;
+import org.nrg.containers.model.configuration.Scope;
+import org.nrg.containers.services.CommandConfigurationEntityService;
 import org.nrg.containers.services.CommandConfigurationService;
+import org.nrg.containers.services.CommandService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class CommandConfigurationServiceImpl implements CommandConfigurationService {
+    private final CommandService commandService;
+    private final CommandConfigurationEntityService commandConfigurationEntityService;
+
+    @Autowired
+    public CommandConfigurationServiceImpl(final CommandService commandService,
+                                           final CommandConfigurationEntityService commandConfigurationEntityService) {
+        this.commandService = commandService;
+        this.commandConfigurationEntityService = commandConfigurationEntityService;
+    }
 
     @Override
     public CommandConfiguration get(final long wrapperId, final Scope scope, final String scopeEntityId) {
@@ -124,6 +138,10 @@ public class CommandConfigurationServiceImpl implements CommandConfigurationServ
 
     @Override
     public void deleteAllForWrapper(final long commandId, final String wrapperName) {
+
+    }
+
+    private CommandConfiguration toPojo(final CommandConfigurationEntity commandConfigurationEntity) {
 
     }
 }
