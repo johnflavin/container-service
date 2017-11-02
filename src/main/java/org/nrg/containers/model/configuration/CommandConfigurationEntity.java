@@ -18,6 +18,24 @@ public class CommandConfigurationEntity extends AbstractHibernateEntity {
     private List<CommandConfigurationOutputEntity> outputs;
     private Boolean enabled;
 
+    public static CommandConfigurationEntity fromPojo(final CommandConfiguration commandConfiguration) {
+        return new CommandConfigurationEntity().update(commandConfiguration);
+    }
+
+    public CommandConfigurationEntity update(final CommandConfiguration commandConfiguration) {
+        // todo stuff
+
+        return this;
+    }
+
+    public Long getCommandWrapperId() {
+        return commandWrapperId;
+    }
+
+    public void setCommandWrapperId(final Long commandWrapperId) {
+        this.commandWrapperId = commandWrapperId;
+    }
+
     public String getProject() {
         return project;
     }

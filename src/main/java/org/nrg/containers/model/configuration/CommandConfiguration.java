@@ -78,6 +78,12 @@ public abstract class CommandConfiguration {
         return builder.build();
     }
 
+    public static CommandConfiguration create(final @Nonnull CommandConfigurationEntity commandConfigurationEntity) {
+        final CommandConfiguration.Builder builder = builder();
+
+        return builder.build();
+    }
+
     public static Builder builder() {
         return new AutoValue_CommandConfiguration.Builder();
     }
@@ -185,6 +191,11 @@ public abstract class CommandConfiguration {
             return builder.build();
         }
 
+        public static CommandInputConfiguration create(final @Nonnull CommandConfigurationInputEntity commandConfigurationInputEntity) {
+            return builder()
+                    .build();
+        }
+
         public static Builder builder() {
             return new AutoValue_CommandConfiguration_CommandInputConfiguration.Builder()
                     .userSettable(true)
@@ -233,6 +244,10 @@ public abstract class CommandConfiguration {
             }
 
             return builder.build();
+        }
+
+        public static CommandOutputConfiguration create(final @Nonnull CommandConfigurationOutputEntity commandConfigurationOutputEntity) {
+            return builder().build();
         }
 
         public static Builder builder() {
