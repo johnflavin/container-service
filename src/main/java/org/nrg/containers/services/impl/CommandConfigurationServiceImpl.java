@@ -2,7 +2,6 @@ package org.nrg.containers.services.impl;
 
 import org.nrg.containers.model.configuration.CommandConfiguration;
 import org.nrg.containers.model.configuration.CommandConfigurationEntity;
-import org.nrg.containers.model.configuration.Scope;
 import org.nrg.containers.services.CommandConfigurationEntityService;
 import org.nrg.containers.services.CommandConfigurationService;
 import org.nrg.containers.services.CommandService;
@@ -22,107 +21,107 @@ public class CommandConfigurationServiceImpl implements CommandConfigurationServ
     }
 
     @Override
-    public CommandConfiguration get(final long wrapperId, final Scope scope, final String scopeEntityId) {
+    public CommandConfiguration get(final long wrapperId, final String project) {
         return null;
     }
 
     @Override
-    public CommandConfiguration get(final long commandId, final long wrapperId, final Scope scope, final String scopeEntityId) {
+    public CommandConfiguration get(final long commandId, final long wrapperId, final String project) {
         return null;
     }
 
     @Override
-    public CommandConfiguration get(final long commandId, final String wrapperName, final Scope scope, final String scopeEntityId) {
+    public CommandConfiguration get(final long commandId, final String wrapperName, final String project) {
         return null;
     }
 
     @Override
-    public void configure(final CommandConfiguration commandConfiguration, final long wrapperId, final Scope scope, final String scopeEntityId) {
+    public void configure(final CommandConfiguration commandConfiguration, final long wrapperId, final String project) {
 
     }
 
     @Override
-    public void configure(final CommandConfiguration commandConfiguration, final long commandId, final long wrapperId, final Scope scope, final String scopeEntityId) {
+    public void configure(final CommandConfiguration commandConfiguration, final long commandId, final long wrapperId, final String project) {
 
     }
 
     @Override
-    public void configure(final CommandConfiguration commandConfiguration, final long commandId, final String wrapperName, final Scope scope, final String scopeEntityId) {
+    public void configure(final CommandConfiguration commandConfiguration, final long commandId, final String wrapperName, final String project) {
 
     }
 
     @Override
-    public Boolean isEnabled(final long wrapperId, final Scope scope, final String scopeEntityId) {
+    public Boolean isEnabled(final long wrapperId, final String project) {
         return null;
     }
 
     @Override
-    public Boolean isEnabled(final long commandId, final long wrapperId, final Scope scope, final String scopeEntityId) {
+    public Boolean isEnabled(final long commandId, final long wrapperId, final String project) {
         return null;
     }
 
     @Override
-    public Boolean isEnabled(final long commandId, final String wrapperName, final Scope scope, final String scopeEntityId) {
+    public Boolean isEnabled(final long commandId, final String wrapperName, final String project) {
         return null;
     }
 
     @Override
-    public void enable(final long wrapperId, final Scope scope, final String scopeEntityId) {
+    public void enable(final long wrapperId, final String project) {
 
     }
 
     @Override
-    public void enable(final long commandId, final long wrapperId, final Scope scope, final String scopeEntityId) {
+    public void enable(final long commandId, final long wrapperId, final String project) {
 
     }
 
     @Override
-    public void enable(final long commandId, final String wrapperName, final Scope scope, final String scopeEntityId) {
+    public void enable(final long commandId, final String wrapperName, final String project) {
 
     }
 
     @Override
-    public void disable(final long wrapperId, final Scope scope, final String scopeEntityId) {
+    public void disable(final long wrapperId, final String project) {
 
     }
 
     @Override
-    public void disable(final long commandId, final long wrapperId, final Scope scope, final String scopeEntityId) {
+    public void disable(final long commandId, final long wrapperId, final String project) {
 
     }
 
     @Override
-    public void disable(final long commandId, final String wrapperName, final Scope scope, final String scopeEntityId) {
+    public void disable(final long commandId, final String wrapperName, final String project) {
 
     }
 
     @Override
-    public void setEnabled(final Boolean enabled, final long wrapperId, final Scope scope, final String scopeEntityId) {
+    public void setEnabled(final Boolean enabled, final long wrapperId, final String project) {
 
     }
 
     @Override
-    public void setEnabled(final Boolean enabled, final long commandId, final long wrapperId, final Scope scope, final String scopeEntityId) {
+    public void setEnabled(final Boolean enabled, final long commandId, final long wrapperId, final String project) {
 
     }
 
     @Override
-    public void setEnabled(final Boolean enabled, final long commandId, final String wrapperName, final Scope scope, final String scopeEntityId) {
+    public void setEnabled(final Boolean enabled, final long commandId, final String wrapperName, final String project) {
 
     }
 
     @Override
-    public void delete(final long wrapperId, final Scope scope, final String scopeEntityId) {
+    public void delete(final long wrapperId, final String project) {
 
     }
 
     @Override
-    public void delete(final long commandId, final long wrapperId, final Scope scope, final String scopeEntityId) {
+    public void delete(final long commandId, final long wrapperId, final String project) {
 
     }
 
     @Override
-    public void delete(final long commandId, final String wrapperName, final Scope scope, final String scopeEntityId) {
+    public void delete(final long commandId, final String wrapperName, final String project) {
 
     }
 

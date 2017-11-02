@@ -2,48 +2,28 @@ package org.nrg.containers.model.configuration;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.Lists;
-import org.nrg.containers.model.command.entity.CommandWrapperEntity;
 import org.nrg.framework.orm.hibernate.AbstractHibernateEntity;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import java.util.List;
 import java.util.Objects;
 
 @Entity
 public class CommandConfigurationEntity extends AbstractHibernateEntity {
-    private CommandWrapperEntity wrapper;
-    private Scope scope;
-    private String scopeEntityId;
+    private Long commandWrapperId;
+    private String project;
     private List<CommandConfigurationInputEntity> inputs;
     private List<CommandConfigurationOutputEntity> outputs;
     private Boolean enabled;
 
-    @ManyToOne
-    public CommandWrapperEntity getWrapper() {
-        return wrapper;
+    public String getProject() {
+        return project;
     }
 
-    public void setWrapper(final CommandWrapperEntity wrapper) {
-        this.wrapper = wrapper;
-    }
-
-    public Scope getScope() {
-        return scope;
-    }
-
-    public void setScope(final Scope scope) {
-        this.scope = scope;
-    }
-
-    public String getScopeEntityId() {
-        return scopeEntityId;
-    }
-
-    public void setScopeEntityId(final String scopeEntityId) {
-        this.scopeEntityId = scopeEntityId;
+    public void setProject(final String project) {
+        this.project = project;
     }
 
     @OneToMany(mappedBy = "commandConfigurationEntity", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -112,22 +92,20 @@ public class CommandConfigurationEntity extends AbstractHibernateEntity {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         final CommandConfigurationEntity that = (CommandConfigurationEntity) o;
-        return Objects.equals(this.wrapper, that.wrapper) &&
-                Objects.equals(this.scope, that.scope) &&
-                Objects.equals(this.scopeEntityId, that.scopeEntityId);
+        return Objects.equals(this.commandWrapperId, that.commandWrapperId) &&
+                Objects.equals(this.project, that.project);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), wrapper, scope, scopeEntityId);
+        return Objects.hash(super.hashCode(), commandWrapperId, project);
     }
 
     @Override
     public String toString() {
         return addParentPropertiesToString(MoreObjects.toStringHelper(this))
-                .add("wrapper", wrapper)
-                .add("scope", scope)
-                .add("scopeEntityId", scopeEntityId)
+                .add("commandWrapperId", commandWrapperId)
+                .add("project", project)
                 .add("inputs", inputs)
                 .add("outputs", outputs)
                 .add("enabled", enabled)

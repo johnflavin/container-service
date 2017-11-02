@@ -38,7 +38,6 @@ public class CommandWrapperEntity implements Serializable {
     @JsonProperty("external-inputs") private List<CommandWrapperExternalInputEntity> externalInputs;
     @JsonProperty("derived-inputs") private List<CommandWrapperDerivedInputEntity> derivedInputs;
     @JsonProperty("output-handlers") private List<CommandWrapperOutputEntity> outputHandlers;
-    private List<CommandConfigurationEntity> commandConfigurationEntities;
 
     @Nonnull
     public static CommandWrapperEntity fromPojo(final @Nonnull Command.CommandWrapper commandWrapper) {
@@ -250,34 +249,6 @@ public class CommandWrapperEntity implements Serializable {
         }
     }
 
-    @OneToMany(mappedBy = "wrapper")
-    public List<CommandConfigurationEntity> getCommandConfigurationEntities() {
-        return commandConfigurationEntities;
-    }
-
-    public void setCommandConfigurationEntities(final List<CommandConfigurationEntity> commandConfigurationEntities) {
-        this.commandConfigurationEntities = commandConfigurationEntities == null ?
-                Lists.<CommandConfigurationEntity>newArrayList() :
-                commandConfigurationEntities;
-
-        for (final CommandConfigurationEntity commandConfigurationEntity : this.commandConfigurationEntities) {
-            commandConfigurationEntity.setWrapper(this);
-        }
-    }
-
-    public void addCommandConfigurationEntity(final CommandConfigurationEntity commandConfigurationEntity) {
-        if (commandConfigurationEntity == null) {
-            return;
-        }
-        commandConfigurationEntity.setWrapper(this);
-
-        if (this.commandConfigurationEntities == null) {
-            this.commandConfigurationEntities = Lists.newArrayList();
-        }
-        if (!this.commandConfigurationEntities.contains(commandConfigurationEntity)) {
-            this.commandConfigurationEntities.add(commandConfigurationEntity);
-        }
-    }
 
     @Override
     public boolean equals(final Object o) {
@@ -303,7 +274,6 @@ public class CommandWrapperEntity implements Serializable {
                 .add("externalInputs", externalInputs)
                 .add("derivedInputs", derivedInputs)
                 .add("outputHandlers", outputHandlers)
-                .add("configurations", commandConfigurationEntities)
                 .toString();
     }
 
