@@ -2,6 +2,7 @@ package org.nrg.containers.model.configuration;
 
 import com.google.common.base.MoreObjects;
 
+import javax.annotation.Nonnull;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -16,6 +17,21 @@ public class CommandConfigurationEntityOutput implements Serializable {
     private CommandConfigurationEntity commandConfigurationEntity;
     private String name;
     private String label;
+
+    @Nonnull
+    public static CommandConfigurationEntityOutput fromPojo(final @Nonnull CommandConfiguration.Output output) {
+        return new CommandConfigurationEntityOutput().update(output);
+    }
+
+    @Nonnull
+    public CommandConfigurationEntityOutput update(final @Nonnull CommandConfiguration.Output that) {
+        if (this.getId() == 0L && that.id() != null) {
+            this.setId(that.id());
+        }
+        this.setName(that.name());
+        this.setLabel(that.label());
+        return this;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

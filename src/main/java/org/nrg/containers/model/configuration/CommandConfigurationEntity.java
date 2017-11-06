@@ -1,9 +1,11 @@
 package org.nrg.containers.model.configuration;
 
+import com.google.common.base.Function;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.Lists;
 import org.nrg.framework.orm.hibernate.AbstractHibernateEntity;
 
+import javax.annotation.Nonnull;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
@@ -18,12 +20,32 @@ public class CommandConfigurationEntity extends AbstractHibernateEntity {
     private List<CommandConfigurationEntityOutput> outputs;
     private Boolean enabled;
 
-    public static CommandConfigurationEntity fromPojo(final CommandConfiguration commandConfiguration) {
+    @Nonnull
+    public static CommandConfigurationEntity fromPojo(final @Nonnull CommandConfiguration commandConfiguration) {
         return new CommandConfigurationEntity().update(commandConfiguration);
     }
 
-    public CommandConfigurationEntity update(final CommandConfiguration commandConfiguration) {
-        // todo stuff
+    @Nonnull
+    public CommandConfigurationEntity update(final @Nonnull CommandConfiguration that) {
+        if (this.getId() == 0L && that.id() != null) {
+            this.setId(that.id());
+        }
+        this.setEnabled(that.enabled());
+        this.setProject(that.project());
+
+        this.setInputs(Lists.transform(that.inputs(), new Function<CommandConfiguration.Input, CommandConfigurationEntityInput>() {
+            @Override
+            public CommandConfigurationEntityInput apply(final CommandConfiguration.Input input) {
+                return CommandConfigurationEntityInput.fromPojo(input);
+            }
+        }));
+
+        this.setOutputs(Lists.transform(that.outputs(), new Function<CommandConfiguration.Output, CommandConfigurationEntityOutput>() {
+            @Override
+            public CommandConfigurationEntityOutput apply(final CommandConfiguration.Output output) {
+                return CommandConfigurationEntityOutput.fromPojo(output);
+            }
+        }));
 
         return this;
     }

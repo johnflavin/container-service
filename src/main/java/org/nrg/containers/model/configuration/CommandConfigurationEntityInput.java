@@ -2,6 +2,7 @@ package org.nrg.containers.model.configuration;
 
 import com.google.common.base.MoreObjects;
 
+import javax.annotation.Nonnull;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -19,6 +20,24 @@ public class CommandConfigurationEntityInput implements Serializable {
     private String matcher;
     private Boolean userSettable;
     private Boolean advanced;
+
+    @Nonnull
+    public static CommandConfigurationEntityInput fromPojo(final @Nonnull CommandConfiguration.Input that) {
+        return new CommandConfigurationEntityInput().update(that);
+    }
+
+    @Nonnull
+    public CommandConfigurationEntityInput update(final @Nonnull CommandConfiguration.Input that) {
+        if (this.getId() == 0L && that.id() != null) {
+            this.setId(that.id());
+        }
+        this.setName(that.name());
+        this.setDefaultValue(that.defaultValue());
+        this.setMatcher(that.matcher());
+        this.setUserSettable(that.userSettable());
+        this.setAdvanced(that.advanced());
+        return this;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
