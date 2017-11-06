@@ -6,8 +6,6 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.auto.value.AutoValue;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Sets;
 import org.nrg.containers.model.command.auto.Command;
 import org.nrg.containers.model.command.auto.Command.CommandInput;
 import org.nrg.containers.model.command.auto.Command.CommandWrapper;
@@ -22,12 +20,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 @AutoValue
 @JsonInclude(Include.ALWAYS)
 public abstract class CommandConfiguration {
     @JsonProperty("id") public abstract Long id();
+    @JsonProperty("wrapper-id") @Nullable public abstract Long wrapperId();
     @JsonProperty("project") public abstract String project();
     @JsonProperty("enabled") @Nullable public abstract Boolean enabled();
     @JsonProperty("inputs") public abstract ImmutableList<Input> inputs();
@@ -35,12 +33,14 @@ public abstract class CommandConfiguration {
 
     @JsonCreator
     public static CommandConfiguration create(@JsonProperty("id") final Long id,
+                                              @JsonProperty("wrapper-id") final Long wrapperId,
                                               @JsonProperty("project") final String project,
                                               @JsonProperty("enabled") final Boolean enabled,
                                               @JsonProperty("inputs") final List<Input> inputs,
                                               @JsonProperty("outputs") final List<Output> outputs) {
         return builder()
                 .id(id)
+                .wrapperId(wrapperId)
                 .project(project)
                 .enabled(enabled)
                 .inputs(inputs == null ? Collections.<Input>emptyList() : inputs)
@@ -89,7 +89,18 @@ public abstract class CommandConfiguration {
     // }
 
     public static CommandConfiguration create(final @Nonnull CommandConfigurationEntity commandConfigurationEntity) {
-        final CommandConfiguration.Builder builder = builder();
+        final CommandConfiguration.Builder builder = builder()
+                .id(commandConfigurationEntity.getId())
+                .wrapperId(commandConfigurationEntity.getCommandWrapperId())
+                .enabled(commandConfigurationEntity.getEnabled());
+
+        for (final CommandConfigurationEntityInput input : commandConfigurationEntity.getInputs()) {
+            builder.addInput(Input.create(input));
+        }
+
+        for (final CommandConfigurationEntityOutput output : commandConfigurationEntity.getOutputs()) {
+            builder.addOutput(Output.create(output));
+        }
 
         return builder.build();
     }
@@ -101,6 +112,7 @@ public abstract class CommandConfiguration {
     @AutoValue.Builder
     public abstract static class Builder {
         public abstract Builder id(Long id);
+        public abstract Builder wrapperId(Long wrapperId);
         public abstract Builder project(String project);
         public abstract Builder enabled(Boolean enabled);
 
