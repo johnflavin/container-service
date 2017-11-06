@@ -11,9 +11,10 @@ import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
-public class CommandConfigurationInputEntity implements Serializable {
+public class CommandConfigurationEntityInput implements Serializable {
     private long id;
     private CommandConfigurationEntity commandConfigurationEntity;
+    private String name;
     private String defaultValue;
     private String matcher;
     private Boolean userSettable;
@@ -36,6 +37,14 @@ public class CommandConfigurationInputEntity implements Serializable {
 
     public void setCommandConfigurationEntity(final CommandConfigurationEntity commandConfigurationEntity) {
         this.commandConfigurationEntity = commandConfigurationEntity;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(final String name) {
+        this.name = name;
     }
 
     public String getDefaultValue() {
@@ -74,18 +83,14 @@ public class CommandConfigurationInputEntity implements Serializable {
     public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        final CommandConfigurationInputEntity that = (CommandConfigurationInputEntity) o;
+        final CommandConfigurationEntityInput that = (CommandConfigurationEntityInput) o;
         return id == that.id &&
-                Objects.equals(this.commandConfigurationEntity, that.commandConfigurationEntity) &&
-                Objects.equals(this.defaultValue, that.defaultValue) &&
-                Objects.equals(this.matcher, that.matcher) &&
-                Objects.equals(this.userSettable, that.userSettable) &&
-                Objects.equals(this.advanced, that.advanced);
+                Objects.equals(this.commandConfigurationEntity, that.commandConfigurationEntity);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, commandConfigurationEntity, defaultValue, matcher, userSettable, advanced);
+        return Objects.hash(id, commandConfigurationEntity);
     }
 
     @Override

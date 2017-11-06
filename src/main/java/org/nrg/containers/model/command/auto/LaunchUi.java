@@ -10,12 +10,11 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import org.nrg.containers.model.command.auto.Command.Input;
 import org.nrg.containers.model.command.auto.ResolvedCommand.PartiallyResolvedCommand;
 import org.nrg.containers.model.command.auto.ResolvedInputTreeNode.ResolvedInputTreeValueAndChildren;
 import org.nrg.containers.model.command.entity.CommandInputEntity.Type;
-import org.nrg.containers.model.configuration.CommandConfiguration;
-import org.nrg.containers.model.configuration.CommandConfiguration.CommandInputConfiguration;
+import org.nrg.containers.model.configuration.CommandConfig;
+import org.nrg.containers.model.configuration.CommandConfig.Input;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -61,7 +60,7 @@ public abstract class LaunchUi {
         }
 
         public static SingleLaunchUi create(final PartiallyResolvedCommand partiallyResolvedCommand,
-                                            final CommandConfiguration commandConfiguration) {
+                                            final CommandConfig commandConfig) {
             return builder()
                     .commandId(partiallyResolvedCommand.commandId())
                     .commandName(partiallyResolvedCommand.commandName())
@@ -71,7 +70,7 @@ public abstract class LaunchUi {
                     .wrapperDescription(partiallyResolvedCommand.wrapperDescription())
                     .imageName(partiallyResolvedCommand.image())
                     .imageType(partiallyResolvedCommand.type())
-                    .addInputsFromInputTrees(partiallyResolvedCommand, commandConfiguration)
+                    .addInputsFromInputTrees(partiallyResolvedCommand, commandConfig)
                     .build();
         }
 
@@ -93,11 +92,11 @@ public abstract class LaunchUi {
             public abstract Builder inputs(Map<String, LaunchUiInput> inputs);
             abstract ImmutableMap.Builder<String, LaunchUiInput> inputsBuilder();
             public Builder addInputsFromInputTrees(final PartiallyResolvedCommand partiallyResolvedCommand,
-                                                   final CommandConfiguration commandConfiguration) {
+                                                   final CommandConfig commandConfig) {
                 // We have to go through the resolved input trees and get their values into the flat structure needed by the UI.
                 final Map<String, LaunchUiInput.Builder> inputBuilderMap = Maps.newHashMap();
-                for (final ResolvedInputTreeNode<? extends Input> rootNode : partiallyResolvedCommand.resolvedInputTrees()) {
-                    addNodesToInputMap(rootNode, null, null, commandConfiguration.inputs(), inputBuilderMap);
+                for (final ResolvedInputTreeNode<? extends Command.Input> rootNode : partiallyResolvedCommand.resolvedInputTrees()) {
+                    addNodesToInputMap(rootNode, null, null, commandConfig.inputs(), inputBuilderMap);
                 }
                 for (final Map.Entry<String, LaunchUiInput.Builder> inputBuilderEntry : inputBuilderMap.entrySet()) {
                     inputsBuilder().put(inputBuilderEntry.getKey(), inputBuilderEntry.getValue().build());
@@ -114,7 +113,7 @@ public abstract class LaunchUi {
         @JsonProperty("inputs") public abstract ImmutableList<ImmutableMap<String, LaunchUiInput>> inputs();
 
         public static BulkLaunchUi.Builder builder(final PartiallyResolvedCommand partiallyResolvedCommand,
-                                                   final CommandConfiguration commandConfiguration) {
+                                                   final CommandConfig commandConfig) {
             return builder()
                     .commandId(partiallyResolvedCommand.commandId())
                     .commandName(partiallyResolvedCommand.commandName())
@@ -124,7 +123,7 @@ public abstract class LaunchUi {
                     .wrapperDescription(partiallyResolvedCommand.wrapperDescription())
                     .imageName(partiallyResolvedCommand.image())
                     .imageType(partiallyResolvedCommand.type())
-                    .addInputsFromInputTrees(partiallyResolvedCommand, commandConfiguration);
+                    .addInputsFromInputTrees(partiallyResolvedCommand, commandConfig);
         }
 
         public static Builder builder() {
@@ -145,11 +144,11 @@ public abstract class LaunchUi {
             public abstract Builder inputs(List<ImmutableMap<String, LaunchUiInput>> inputs);
             abstract ImmutableList.Builder<ImmutableMap<String, LaunchUiInput>> inputsBuilder();
             public Builder addInputsFromInputTrees(final PartiallyResolvedCommand partiallyResolvedCommand,
-                                                   final CommandConfiguration commandConfiguration) {
+                                                   final CommandConfig commandConfig) {
                 // We have to go through the resolved input trees and get their values into the flat structure needed by the UI.
                 final Map<String, LaunchUiInput.Builder> inputBuilderMap = Maps.newHashMap();
-                for (final ResolvedInputTreeNode<? extends Input> rootNode : partiallyResolvedCommand.resolvedInputTrees()) {
-                    addNodesToInputMap(rootNode, null, null, commandConfiguration.inputs(), inputBuilderMap);
+                for (final ResolvedInputTreeNode<? extends Command.Input> rootNode : partiallyResolvedCommand.resolvedInputTrees()) {
+                    addNodesToInputMap(rootNode, null, null, commandConfig.inputs(), inputBuilderMap);
                 }
 
                 final ImmutableMap.Builder<String, LaunchUiInput> inputBuilder = ImmutableMap.builder();
@@ -163,17 +162,17 @@ public abstract class LaunchUi {
         }
     }
 
-    private static void addNodesToInputMap(final @Nonnull ResolvedInputTreeNode<? extends Input> node,
+    private static void addNodesToInputMap(final @Nonnull ResolvedInputTreeNode<? extends Command.Input> node,
                                            final @Nullable String parentName,
                                            final @Nullable String parentValue,
-                                           final @Nonnull Map<String, CommandInputConfiguration> inputConfigurationMap,
+                                           final @Nonnull Map<String, Input> inputConfigurationMap,
                                            final @Nonnull Map<String, LaunchUiInput.Builder> inputMap) {
-        final Input commandInput = node.input();
+        final Command.Input commandInput = node.input();
         final String inputName = commandInput.name();
-        final CommandInputConfiguration inputConfiguration =
+        final Input inputConfiguration =
                 inputConfigurationMap.containsKey(inputName) && inputConfigurationMap.get(inputName) != null ?
                         inputConfigurationMap.get(inputName) :
-                        CommandInputConfiguration.builder().build();
+                        Input.builder().build();
 
         final List<LaunchUiInputValue> valueList = Lists.newArrayList();
         final List<String> childNames = Lists.newArrayList();
@@ -182,7 +181,7 @@ public abstract class LaunchUi {
             final String value = resolvedValue.value();
 
             // Add all children to the map, using this node's value as their parent value
-            for (final ResolvedInputTreeNode<? extends Input> child : valueAndChildren.children()) {
+            for (final ResolvedInputTreeNode<? extends Command.Input> child : valueAndChildren.children()) {
                 childNames.add(child.input().name());
                 addNodesToInputMap(child, commandInput.name(), value, inputConfigurationMap, inputMap);
             }

@@ -17,7 +17,6 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatcher;
-import org.mockito.Matchers;
 import org.mockito.Mockito;
 import org.nrg.containers.api.ContainerControlApi;
 import org.nrg.containers.config.LaunchRestApiTestConfig;
@@ -26,7 +25,8 @@ import org.nrg.containers.model.command.auto.Command.CommandWrapper;
 import org.nrg.containers.model.command.auto.LaunchReport;
 import org.nrg.containers.model.command.auto.LaunchUi;
 import org.nrg.containers.model.command.auto.ResolvedCommand;
-import org.nrg.containers.model.configuration.CommandConfiguration;
+import org.nrg.containers.model.configuration.CommandConfig;
+import org.nrg.containers.model.configuration.CommandConfig.Input;
 import org.nrg.containers.model.container.auto.Container;
 import org.nrg.containers.model.container.entity.ContainerEntity;
 import org.nrg.containers.services.CommandResolutionService;
@@ -52,7 +52,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.io.File;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -63,7 +62,6 @@ import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyMap;
 import static org.mockito.Matchers.anyMapOf;
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Matchers.eq;
@@ -319,14 +317,14 @@ public class LaunchRestApiTest {
         final String project = "project";
 
         // Mock out command configuration (project)
-        final CommandConfiguration mockCommandConfiguration = CommandConfiguration.builder()
+        final CommandConfig mockCommandConfig = CommandConfig.builder()
                 .addInput("name",
-                        CommandConfiguration.CommandInputConfiguration.builder()
+                        Input.builder()
                                 .defaultValue("value")
                                 .build()
                 )
                 .build();
-        when(mockCommandService.getProjectConfiguration(project, WRAPPER_ID)).thenReturn(mockCommandConfiguration);
+        when(mockCommandService.getProjectConfiguration(project, WRAPPER_ID)).thenReturn(mockCommandConfig);
 
         // Mock out command resolution service
         final ResolvedCommand.PartiallyResolvedCommand partiallyResolvedCommand = ResolvedCommand.PartiallyResolvedCommand.builder()
@@ -339,7 +337,7 @@ public class LaunchRestApiTest {
         when(mockCommandResolutionService.preResolve(eq(project), eq(WRAPPER_ID), anyMapOf(String.class, String.class), eq(mockAdmin)))
                 .thenReturn(partiallyResolvedCommand);
 
-        final LaunchUi expectedLaunchUi = LaunchUi.SingleLaunchUi.create(partiallyResolvedCommand, mockCommandConfiguration);
+        final LaunchUi expectedLaunchUi = LaunchUi.SingleLaunchUi.create(partiallyResolvedCommand, mockCommandConfig);
 
         final String path = String.format(pathTemplate, project, WRAPPER_ID);
         final MockHttpServletRequestBuilder request = get(path)

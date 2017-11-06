@@ -11,12 +11,12 @@ import com.jayway.jsonpath.spi.mapper.JacksonMappingProvider;
 import com.jayway.jsonpath.spi.mapper.MappingProvider;
 import org.nrg.containers.exceptions.CommandValidationException;
 import org.nrg.containers.model.command.auto.CommandSummaryForContext;
-import org.nrg.containers.model.configuration.CommandConfiguration;
+import org.nrg.containers.model.configuration.CommandConfig;
 import org.nrg.containers.model.command.entity.CommandEntity;
 import org.nrg.containers.model.command.entity.CommandWrapperEntity;
 import org.nrg.containers.model.command.auto.Command;
 import org.nrg.containers.model.command.auto.Command.CommandWrapper;
-import org.nrg.containers.model.configuration.CommandConfigurationInternal;
+import org.nrg.containers.model.configuration.CommandConfigInternal;
 import org.nrg.containers.model.configuration.ProjectEnabledReport;
 import org.nrg.containers.services.CommandEntityService;
 import org.nrg.containers.services.CommandService;
@@ -239,75 +239,75 @@ public class CommandServiceImpl implements CommandService, InitializingBean {
     }
 
     @Override
-    public void configureForSite(final CommandConfiguration commandConfiguration, final long wrapperId, final boolean enable, final String username, final String reason)
+    public void configureForSite(final CommandConfig commandConfig, final long wrapperId, final boolean enable, final String username, final String reason)
             throws CommandConfigurationException, NotFoundException {
         // If the "enable" param is true, we enable the configuration.
         // Otherwise, we leave the existing "enabled" setting alone (even if it is null).
         // We will never change "enabled" to "false" here.
         final Boolean enabledStatusToSet = enable ? Boolean.TRUE : isEnabledForSite(wrapperId);
         containerConfigService.configureForSite(
-                CommandConfigurationInternal.create(enabledStatusToSet, commandConfiguration),
+                CommandConfigInternal.create(enabledStatusToSet, commandConfig),
                 wrapperId, username, reason);
     }
 
     @Override
-    public void configureForSite(final CommandConfiguration commandConfiguration, final long commandId, final String wrapperName, final boolean enable, final String username, final String reason)
+    public void configureForSite(final CommandConfig commandConfig, final long commandId, final String wrapperName, final boolean enable, final String username, final String reason)
             throws CommandConfigurationException, NotFoundException {
-        configureForSite(commandConfiguration, getWrapperId(commandId, wrapperName), enable, username, reason);
+        configureForSite(commandConfig, getWrapperId(commandId, wrapperName), enable, username, reason);
     }
 
     @Override
-    public void configureForProject(final CommandConfiguration commandConfiguration, final String project, final long wrapperId, final boolean enable, final String username, final String reason) throws CommandConfigurationException, NotFoundException {
+    public void configureForProject(final CommandConfig commandConfig, final String project, final long wrapperId, final boolean enable, final String username, final String reason) throws CommandConfigurationException, NotFoundException {
         // If the "enable" param is true, we enable the configuration.
         // Otherwise, we leave the existing "enabled" setting alone (even if it is null).
         // We will never change "enabled" to "false" here.
         final Boolean enabledStatusToSet = enable ? Boolean.TRUE : isEnabledForProject(project, wrapperId);
         containerConfigService.configureForProject(
-                CommandConfigurationInternal.create(enabledStatusToSet, commandConfiguration),
+                CommandConfigInternal.create(enabledStatusToSet, commandConfig),
                 project, wrapperId, username, reason);
     }
 
     @Override
-    public void configureForProject(final CommandConfiguration commandConfiguration, final String project, final long commandId, final String wrapperName, final boolean enable, final String username, final String reason) throws CommandConfigurationException, NotFoundException {
-        configureForProject(commandConfiguration, project, getWrapperId(commandId, wrapperName), enable, username, reason);
+    public void configureForProject(final CommandConfig commandConfig, final String project, final long commandId, final String wrapperName, final boolean enable, final String username, final String reason) throws CommandConfigurationException, NotFoundException {
+        configureForProject(commandConfig, project, getWrapperId(commandId, wrapperName), enable, username, reason);
     }
 
     @Override
     @Nonnull
-    public CommandConfiguration getSiteConfiguration(final long wrapperId) throws NotFoundException {
-        final CommandConfigurationInternal commandConfigurationInternal = containerConfigService.getSiteConfiguration(wrapperId);
+    public CommandConfig getSiteConfiguration(final long wrapperId) throws NotFoundException {
+        final CommandConfigInternal commandConfigInternal = containerConfigService.getSiteConfiguration(wrapperId);
         final Command command = getCommandWithOneWrapper(wrapperId);
         final CommandWrapper commandWrapper = command.xnatCommandWrappers().get(0);
-        return CommandConfiguration.create(command, commandWrapper, commandConfigurationInternal);
+        return CommandConfig.create(command, commandWrapper, commandConfigInternal);
     }
 
     @Override
     @Nonnull
-    public CommandConfiguration getSiteConfiguration(final long commandId, final String wrapperName) throws NotFoundException {
+    public CommandConfig getSiteConfiguration(final long commandId, final String wrapperName) throws NotFoundException {
         return getSiteConfiguration(getWrapperId(commandId, wrapperName));
     }
 
     @Override
     @Nonnull
-    public CommandConfiguration getProjectConfiguration(final String project, final long wrapperId) throws NotFoundException {
-        final CommandConfigurationInternal commandConfigurationInternal = containerConfigService.getProjectConfiguration(project, wrapperId);
+    public CommandConfig getProjectConfiguration(final String project, final long wrapperId) throws NotFoundException {
+        final CommandConfigInternal commandConfigInternal = containerConfigService.getProjectConfiguration(project, wrapperId);
         final Command command = getCommandWithOneWrapper(wrapperId);
         final CommandWrapper commandWrapper = command.xnatCommandWrappers().get(0);
-        return CommandConfiguration.create(command, commandWrapper, commandConfigurationInternal);
+        return CommandConfig.create(command, commandWrapper, commandConfigInternal);
     }
 
     @Override
     @Nonnull
-    public CommandConfiguration getProjectConfiguration(final String project, final long commandId, final String wrapperName) throws NotFoundException {
+    public CommandConfig getProjectConfiguration(final String project, final long commandId, final String wrapperName) throws NotFoundException {
         return getProjectConfiguration(project, getWrapperId(commandId, wrapperName));
     }
 
     @Override
     @Nonnull
     public Command.ConfiguredCommand getAndConfigure(final long wrapperId) throws NotFoundException {
-        final CommandConfiguration commandConfiguration = getSiteConfiguration(wrapperId);
+        final CommandConfig commandConfig = getSiteConfiguration(wrapperId);
         final Command command = getCommandWithOneWrapper(wrapperId);
-        return commandConfiguration.apply(command);
+        return commandConfig.apply(command);
     }
 
     @Override
@@ -319,9 +319,9 @@ public class CommandServiceImpl implements CommandService, InitializingBean {
     @Override
     @Nonnull
     public Command.ConfiguredCommand getAndConfigure(final String project, final long wrapperId) throws NotFoundException {
-        final CommandConfiguration commandConfiguration = getProjectConfiguration(project, wrapperId);
+        final CommandConfig commandConfig = getProjectConfiguration(project, wrapperId);
         final Command command = getCommandWithOneWrapper(wrapperId);
-        return commandConfiguration.apply(command);
+        return commandConfig.apply(command);
     }
 
     @Override

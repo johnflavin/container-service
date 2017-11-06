@@ -8,7 +8,7 @@ import org.nrg.containers.exceptions.CommandValidationException;
 import org.nrg.containers.exceptions.ContainerException;
 import org.nrg.containers.exceptions.DockerServerException;
 import org.nrg.containers.exceptions.NoDockerServerException;
-import org.nrg.containers.model.configuration.CommandConfiguration;
+import org.nrg.containers.model.configuration.CommandConfig;
 import org.nrg.containers.model.configuration.ProjectEnabledReport;
 import org.nrg.containers.services.CommandService;
 import org.nrg.containers.services.ContainerConfigService.CommandConfigurationException;
@@ -57,7 +57,7 @@ public class CommandConfigurationRestApi extends AbstractXapiRestController {
 
     // Configure for site + command wrapper
     @XapiRequestMapping(value = {"/commands/{commandId}/wrappers/{wrapperName}/config"}, method = POST, restrictTo = Admin)
-    public ResponseEntity<Void> createConfiguration(final @RequestBody CommandConfiguration commandConfiguration,
+    public ResponseEntity<Void> createConfiguration(final @RequestBody CommandConfig commandConfig,
                                                     final @PathVariable long commandId,
                                                     final @PathVariable String wrapperName,
                                                     final @RequestParam(required = false, defaultValue = "true") boolean enable,
@@ -65,33 +65,33 @@ public class CommandConfigurationRestApi extends AbstractXapiRestController {
             throws CommandConfigurationException, NotFoundException {
         final UserI userI = XDAT.getUserDetails();
 
-        commandService.configureForSite(commandConfiguration, commandId, wrapperName, enable, userI.getLogin(), reason);
+        commandService.configureForSite(commandConfig, commandId, wrapperName, enable, userI.getLogin(), reason);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @XapiRequestMapping(value = {"/wrappers/{wrapperId}/config"}, method = POST, restrictTo = Admin)
-    public ResponseEntity<Void> createConfiguration(final @RequestBody CommandConfiguration commandConfiguration,
+    public ResponseEntity<Void> createConfiguration(final @RequestBody CommandConfig commandConfig,
                                                     final @PathVariable long wrapperId,
                                                     final @RequestParam(required = false, defaultValue = "true") boolean enable,
                                                     final @RequestParam(required = false) String reason)
             throws CommandConfigurationException, NotFoundException {
         final UserI userI = XDAT.getUserDetails();
 
-        commandService.configureForSite(commandConfiguration, wrapperId, enable, userI.getLogin(), reason);
+        commandService.configureForSite(commandConfig, wrapperId, enable, userI.getLogin(), reason);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     // Get configuration for site + command wrapper
     @XapiRequestMapping(value = {"/commands/{commandId}/wrappers/{wrapperName}/config"}, method = GET, restrictTo = Admin)
     @ResponseBody
-    public CommandConfiguration getConfiguration(final @PathVariable long commandId,
-                                                 final @PathVariable String wrapperName) throws NotFoundException {
+    public CommandConfig getConfiguration(final @PathVariable long commandId,
+                                          final @PathVariable String wrapperName) throws NotFoundException {
         return commandService.getSiteConfiguration(commandId, wrapperName);
     }
 
     @XapiRequestMapping(value = {"/wrappers/{wrapperId}/config"}, method = GET, restrictTo = Admin)
     @ResponseBody
-    public CommandConfiguration getConfiguration(final @PathVariable long wrapperId) throws NotFoundException {
+    public CommandConfig getConfiguration(final @PathVariable long wrapperId) throws NotFoundException {
         return commandService.getSiteConfiguration(wrapperId);
     }
 
@@ -115,7 +115,7 @@ public class CommandConfigurationRestApi extends AbstractXapiRestController {
 
     // Configure for project + command wrapper
     @XapiRequestMapping(value = {"/projects/{project}/commands/{commandId}/wrappers/{wrapperName}/config"}, method = POST, restrictTo = Owner)
-    public ResponseEntity<Void> createConfiguration(final @RequestBody CommandConfiguration commandConfiguration,
+    public ResponseEntity<Void> createConfiguration(final @RequestBody CommandConfig commandConfig,
                                                     final @PathVariable String project,
                                                     final @PathVariable long commandId,
                                                     final @PathVariable String wrapperName,
@@ -124,12 +124,12 @@ public class CommandConfigurationRestApi extends AbstractXapiRestController {
             throws CommandConfigurationException, NotFoundException {
         final UserI userI = XDAT.getUserDetails();
 
-        commandService.configureForProject(commandConfiguration, project, commandId, wrapperName, enable, userI.getLogin(), reason);
+        commandService.configureForProject(commandConfig, project, commandId, wrapperName, enable, userI.getLogin(), reason);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @XapiRequestMapping(value = {"/projects/{project}/wrappers/{wrapperId}/config"}, method = POST, restrictTo = Owner)
-    public ResponseEntity<Void> createConfiguration(final @RequestBody CommandConfiguration commandConfiguration,
+    public ResponseEntity<Void> createConfiguration(final @RequestBody CommandConfig commandConfig,
                                                     final @PathVariable String project,
                                                     final @PathVariable long wrapperId,
                                                     final @RequestParam(required = false, defaultValue = "true") boolean enable,
@@ -137,23 +137,23 @@ public class CommandConfigurationRestApi extends AbstractXapiRestController {
             throws CommandConfigurationException, NotFoundException {
         final UserI userI = XDAT.getUserDetails();
 
-        commandService.configureForProject(commandConfiguration, project, wrapperId, enable, userI.getLogin(), reason);
+        commandService.configureForProject(commandConfig, project, wrapperId, enable, userI.getLogin(), reason);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     // Get configuration for project + command wrapper
     @XapiRequestMapping(value = {"/projects/{project}/commands/{commandId}/wrappers/{wrapperName}/config"}, method = GET, restrictTo = Read)
     @ResponseBody
-    public CommandConfiguration getConfiguration(final @PathVariable String project,
-                                                 final @PathVariable long commandId,
-                                                 final @PathVariable String wrapperName) throws NotFoundException {
+    public CommandConfig getConfiguration(final @PathVariable String project,
+                                          final @PathVariable long commandId,
+                                          final @PathVariable String wrapperName) throws NotFoundException {
         return commandService.getProjectConfiguration(project, commandId, wrapperName);
     }
 
     @XapiRequestMapping(value = {"/projects/{project}/wrappers/{wrapperId}/config"}, method = GET, restrictTo = Read)
     @ResponseBody
-    public CommandConfiguration getConfiguration(final @PathVariable String project,
-                                                 final @PathVariable long wrapperId) throws NotFoundException {
+    public CommandConfig getConfiguration(final @PathVariable String project,
+                                          final @PathVariable long wrapperId) throws NotFoundException {
         return commandService.getProjectConfiguration(project, wrapperId);
     }
 

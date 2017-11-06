@@ -14,8 +14,8 @@ import java.util.Objects;
 public class CommandConfigurationEntity extends AbstractHibernateEntity {
     private Long commandWrapperId;
     private String project;
-    private List<CommandConfigurationInputEntity> inputs;
-    private List<CommandConfigurationOutputEntity> outputs;
+    private List<CommandConfigurationEntityInput> inputs;
+    private List<CommandConfigurationEntityOutput> outputs;
     private Boolean enabled;
 
     public static CommandConfigurationEntity fromPojo(final CommandConfiguration commandConfiguration) {
@@ -45,20 +45,20 @@ public class CommandConfigurationEntity extends AbstractHibernateEntity {
     }
 
     @OneToMany(mappedBy = "commandConfigurationEntity", cascade = CascadeType.ALL, orphanRemoval = true)
-    public List<CommandConfigurationInputEntity> getInputs() {
+    public List<CommandConfigurationEntityInput> getInputs() {
         return inputs;
     }
 
-    public void setInputs(final List<CommandConfigurationInputEntity> inputs) {
+    public void setInputs(final List<CommandConfigurationEntityInput> inputs) {
         this.inputs = inputs == null ?
-                Lists.<CommandConfigurationInputEntity>newArrayList() :
+                Lists.<CommandConfigurationEntityInput>newArrayList() :
                 inputs;
-        for (final CommandConfigurationInputEntity input : this.inputs) {
+        for (final CommandConfigurationEntityInput input : this.inputs) {
             input.setCommandConfigurationEntity(this);
         }
     }
 
-    public void addInput(final CommandConfigurationInputEntity input) {
+    public void addInput(final CommandConfigurationEntityInput input) {
         if (input == null) {
             return;
         }
@@ -71,20 +71,20 @@ public class CommandConfigurationEntity extends AbstractHibernateEntity {
     }
 
     @OneToMany(mappedBy = "commandConfigurationEntity", cascade = CascadeType.ALL, orphanRemoval = true)
-    public List<CommandConfigurationOutputEntity> getOutputs() {
+    public List<CommandConfigurationEntityOutput> getOutputs() {
         return outputs;
     }
 
-    public void setOutputs(final List<CommandConfigurationOutputEntity> outputs) {
+    public void setOutputs(final List<CommandConfigurationEntityOutput> outputs) {
         this.outputs = outputs == null ?
-                Lists.<CommandConfigurationOutputEntity>newArrayList() :
+                Lists.<CommandConfigurationEntityOutput>newArrayList() :
                 outputs;
-        for (final CommandConfigurationOutputEntity output : this.outputs) {
+        for (final CommandConfigurationEntityOutput output : this.outputs) {
             output.setCommandConfigurationEntity(this);
         }
     }
 
-    public void addOutput(final CommandConfigurationOutputEntity output) {
+    public void addOutput(final CommandConfigurationEntityOutput output) {
         if (output == null) {
             return;
         }

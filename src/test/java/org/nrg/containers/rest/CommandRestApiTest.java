@@ -13,9 +13,11 @@ import org.nrg.config.entities.Configuration;
 import org.nrg.config.services.ConfigService;
 import org.nrg.containers.config.CommandRestApiTestConfig;
 import org.nrg.containers.model.command.auto.CommandSummaryForContext;
-import org.nrg.containers.model.configuration.CommandConfigurationInternal;
+import org.nrg.containers.model.configuration.CommandConfigInternal;
 import org.nrg.containers.model.command.auto.Command;
 import org.nrg.containers.model.command.auto.Command.CommandWrapper;
+import org.nrg.containers.model.configuration.CommandConfigInternal.Input;
+import org.nrg.containers.model.configuration.CommandConfigInternal.Output;
 import org.nrg.containers.services.CommandService;
 import org.nrg.containers.services.ContainerConfigService;
 import org.nrg.containers.services.DockerServerService;
@@ -576,10 +578,10 @@ public class CommandRestApiTest {
                 CommandSummaryForContext.create(command, wrapper, true, externalInputName)
         );
 
-        final CommandConfigurationInternal commandConfiguration = CommandConfigurationInternal.create(
+        final CommandConfigInternal commandConfiguration = CommandConfigInternal.create(
                 Boolean.TRUE,
-                Collections.<String, CommandConfigurationInternal.CommandInputConfiguration>emptyMap(),
-                Collections.<String, CommandConfigurationInternal.CommandOutputConfiguration>emptyMap());
+                Collections.<String, Input>emptyMap(),
+                Collections.<String, Output>emptyMap());
         final String commandConfigurationJson = mapper.writeValueAsString(commandConfiguration);
         final Configuration mockConfiguration = mock(Configuration.class);
         when(mockConfiguration.getContents()).thenReturn(commandConfigurationJson);

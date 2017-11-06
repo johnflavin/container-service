@@ -26,9 +26,9 @@ import org.nrg.containers.model.command.auto.Command.CommandWrapperExternalInput
 import org.nrg.containers.model.command.auto.Command.ConfiguredCommand;
 import org.nrg.containers.model.command.auto.ResolvedCommand;
 import org.nrg.containers.model.command.entity.CommandType;
-import org.nrg.containers.model.configuration.CommandConfiguration;
-import org.nrg.containers.model.configuration.CommandConfiguration.CommandInputConfiguration;
-import org.nrg.containers.model.configuration.CommandConfigurationInternal;
+import org.nrg.containers.model.configuration.CommandConfig;
+import org.nrg.containers.model.configuration.CommandConfig.Input;
+import org.nrg.containers.model.configuration.CommandConfigInternal;
 import org.nrg.containers.model.xnat.Project;
 import org.nrg.containers.model.xnat.Resource;
 import org.nrg.containers.model.xnat.Scan;
@@ -53,9 +53,7 @@ import java.util.Map;
 import java.util.Set;
 
 import static org.hamcrest.Matchers.hasEntry;
-import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.isA;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
@@ -148,25 +146,25 @@ public class CommandResolutionTest {
         TestTransaction.end();
         TestTransaction.start();
 
-        final CommandConfiguration siteConfiguration = CommandConfiguration.builder()
-                .addInput(commandInputName, CommandInputConfiguration.builder()
+        final CommandConfig siteConfiguration = CommandConfig.builder()
+                .addInput(commandInputName, Input.builder()
                         .defaultValue(commandInputConfiguredDefaultValue)
                         .build())
                 .build();
-        final CommandConfigurationInternal siteConfigurationInternal =
-                CommandConfigurationInternal.create(true, siteConfiguration);
+        final CommandConfigInternal siteConfigurationInternal =
+                CommandConfigInternal.create(true, siteConfiguration);
         final String siteConfigJson = mapper.writeValueAsString(siteConfigurationInternal);
         final org.nrg.config.entities.Configuration mockSiteConfig =
                 Mockito.mock(org.nrg.config.entities.Configuration.class);
         when(mockSiteConfig.getContents()).thenReturn(siteConfigJson);
 
-        final CommandConfigurationInternal projectConfigurationInternal =
-                siteConfigurationInternal.merge(CommandConfigurationInternal.create(true, CommandConfiguration.builder()
-                        .addInput(commandWrapperExternalInputName, CommandInputConfiguration.builder()
+        final CommandConfigInternal projectConfigurationInternal =
+                siteConfigurationInternal.merge(CommandConfigInternal.create(true, CommandConfig.builder()
+                        .addInput(commandWrapperExternalInputName, Input.builder()
                                 .defaultValue(commandWrapperExternalInputConfiguredDefaultValue)
                                 .build())
                         .build()), true);
-        final CommandConfiguration projectConfiguration = CommandConfiguration.create(
+        final CommandConfig projectConfiguration = CommandConfig.create(
                 command,
                 command.xnatCommandWrappers().get(0),
                 projectConfigurationInternal

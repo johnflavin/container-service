@@ -15,7 +15,7 @@ import org.nrg.containers.exceptions.UnauthorizedException;
 import org.nrg.containers.model.command.auto.LaunchReport;
 import org.nrg.containers.model.command.auto.LaunchUi;
 import org.nrg.containers.model.command.auto.ResolvedCommand.PartiallyResolvedCommand;
-import org.nrg.containers.model.configuration.CommandConfiguration;
+import org.nrg.containers.model.configuration.CommandConfig;
 import org.nrg.containers.model.container.auto.Container;
 import org.nrg.containers.services.CommandResolutionService;
 import org.nrg.containers.services.CommandService;
@@ -137,7 +137,7 @@ public class LaunchRestApi extends AbstractXapiRestController {
                                                 final Map<String, String> allRequestParams)
             throws NotFoundException, CommandResolutionException, UnauthorizedException {
         log.debug("Getting {} configuration for command {}, wrapper name {}, wrapper id {}.", project == null ? "site" : "project " + project, commandId, wrapperName, wrapperId);
-        final CommandConfiguration commandConfiguration = getCommandConfiguration(project, commandId, wrapperName, wrapperId);
+        final CommandConfig commandConfig = getCommandConfiguration(project, commandId, wrapperName, wrapperId);
         try {
             log.debug("Preparing to pre-resolve command {}, wrapperName {}, wrapperId {}, in project {} with inputs {}.", commandId, wrapperName, wrapperId, project, allRequestParams);
             final UserI userI = XDAT.getUserDetails();
@@ -146,7 +146,7 @@ public class LaunchRestApi extends AbstractXapiRestController {
 
 
             log.debug("Creating launch UI.");
-            return LaunchUi.SingleLaunchUi.create(partiallyResolvedCommand, commandConfiguration);
+            return LaunchUi.SingleLaunchUi.create(partiallyResolvedCommand, commandConfig);
         } catch (Throwable t) {
             log.error("Error getting launch UI.", t);
             if (Exception.class.isAssignableFrom(t.getClass())) {
@@ -173,10 +173,10 @@ public class LaunchRestApi extends AbstractXapiRestController {
                         commandResolutionService.preResolve(project, commandId, wrapperName, allRequestParams, userI));
     }
 
-    private CommandConfiguration getCommandConfiguration(final String project,
-                                                         final long commandId,
-                                                         final String wrapperName,
-                                                         final long wrapperId) throws NotFoundException {
+    private CommandConfig getCommandConfiguration(final String project,
+                                                  final long commandId,
+                                                  final String wrapperName,
+                                                  final long wrapperId) throws NotFoundException {
         return project == null ?
                 (commandId == 0L && wrapperName == null ?
                         commandService.getSiteConfiguration(wrapperId) :
@@ -269,7 +269,7 @@ public class LaunchRestApi extends AbstractXapiRestController {
 
         try {
             log.debug("Getting {} configuration for command {}, wrapper name {}, wrapper id {}.", project == null ? "site" : "project " + project, commandId, wrapperName, wrapperId);
-            final CommandConfiguration commandConfiguration = getCommandConfiguration(project, commandId, wrapperName, wrapperId);
+            final CommandConfig commandConfig = getCommandConfiguration(project, commandId, wrapperName, wrapperId);
 
             final UserI userI = XDAT.getUserDetails();
 
@@ -280,8 +280,8 @@ public class LaunchRestApi extends AbstractXapiRestController {
                 log.debug("Done pre-resolving command {}, wrapperName {}, wrapperId {}, in project {}.", commandId, wrapperName, project);
 
                 bulkLaunchUiBuilder = bulkLaunchUiBuilder == null ?
-                        LaunchUi.BulkLaunchUi.builder(partiallyResolvedCommand, commandConfiguration) :
-                        bulkLaunchUiBuilder.addInputsFromInputTrees(partiallyResolvedCommand, commandConfiguration);
+                        LaunchUi.BulkLaunchUi.builder(partiallyResolvedCommand, commandConfig) :
+                        bulkLaunchUiBuilder.addInputsFromInputTrees(partiallyResolvedCommand, commandConfig);
             }
 
             log.debug("Creating launch UI.");

@@ -24,8 +24,10 @@ import org.nrg.containers.model.command.entity.CommandWrapperInputType;
 import org.nrg.containers.model.command.entity.DockerCommandEntity;
 import org.nrg.containers.model.command.entity.CommandWrapperOutputEntity;
 import org.nrg.containers.model.command.entity.CommandWrapperEntity;
-import org.nrg.containers.model.configuration.CommandConfiguration.CommandInputConfiguration;
-import org.nrg.containers.model.configuration.CommandConfiguration.CommandOutputConfiguration;
+import org.nrg.containers.model.configuration.CommandConfig;
+import org.nrg.containers.model.configuration.CommandConfig.Output;
+import org.nrg.containers.model.configuration.CommandConfiguration;
+import org.nrg.containers.model.configuration.CommandConfiguration.Input;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -590,7 +592,13 @@ public abstract class Command {
                     .required(false);
         }
 
-        public CommandInput applyConfiguration(final CommandInputConfiguration commandInputConfiguration) {
+        /**
+         * Use {@link #applyConfiguration(CommandConfiguration.Input)}
+         * @param input
+         * @return Configured command input
+         */
+        @Deprecated
+        public CommandInput applyConfiguration(final CommandConfig.Input input) {
             return builder()
                     .name(this.name())
                     .id(this.id())
@@ -602,8 +610,25 @@ public abstract class Command {
                     .commandLineSeparator(this.commandLineSeparator())
                     .trueValue(this.trueValue())
                     .falseValue(this.falseValue())
-                    .defaultValue(commandInputConfiguration.defaultValue())
-                    .matcher(commandInputConfiguration.matcher())
+                    .defaultValue(input.defaultValue())
+                    .matcher(input.matcher())
+                    .build();
+        }
+
+        public CommandInput applyConfiguration(final CommandConfiguration.Input input) {
+            return builder()
+                    .name(this.name())
+                    .id(this.id())
+                    .description(this.description())
+                    .type(this.type())
+                    .required(this.required())
+                    .rawReplacementKey(this.rawReplacementKey())
+                    .commandLineFlag(this.commandLineFlag())
+                    .commandLineSeparator(this.commandLineSeparator())
+                    .trueValue(this.trueValue())
+                    .falseValue(this.falseValue())
+                    .defaultValue(input.defaultValue())
+                    .matcher(input.matcher())
                     .build();
         }
 
@@ -1017,7 +1042,13 @@ public abstract class Command {
                     .loadChildren(true);
         }
 
-        public CommandWrapperExternalInput applyConfiguration(final CommandInputConfiguration commandInputConfiguration) {
+        /**
+         * Use {@link #applyConfiguration(CommandConfiguration.Input)}
+         * @param input
+         * @return Configured command input
+         */
+        @Deprecated
+        public CommandWrapperExternalInput applyConfiguration(final CommandConfig.Input input) {
             return builder()
                     .id(this.id())
                     .name(this.name())
@@ -1026,9 +1057,24 @@ public abstract class Command {
                     .providesFilesForCommandMount(this.providesFilesForCommandMount())
                     .required(this.required())
                     .loadChildren(this.loadChildren())
-                    .defaultValue(commandInputConfiguration.defaultValue())
-                    .matcher(commandInputConfiguration.matcher())
-                    .userSettable(commandInputConfiguration.userSettable())
+                    .defaultValue(input.defaultValue())
+                    .matcher(input.matcher())
+                    .userSettable(input.userSettable())
+                    .build();
+        }
+
+        public CommandWrapperExternalInput applyConfiguration(final CommandConfiguration.Input input) {
+            return builder()
+                    .id(this.id())
+                    .name(this.name())
+                    .type(this.type())
+                    .providesValueForCommandInput(this.providesValueForCommandInput())
+                    .providesFilesForCommandMount(this.providesFilesForCommandMount())
+                    .required(this.required())
+                    .loadChildren(this.loadChildren())
+                    .defaultValue(input.defaultValue())
+                    .matcher(input.matcher())
+                    .userSettable(input.userSettable())
                     .build();
         }
 
@@ -1120,7 +1166,13 @@ public abstract class Command {
                     .loadChildren(true);
         }
 
-        public CommandWrapperDerivedInput applyConfiguration(final CommandInputConfiguration commandInputConfiguration) {
+        /**
+         * Use {@link #applyConfiguration(CommandConfiguration.Input)}
+         * @param input
+         * @return Configured command input
+         */
+        @Deprecated
+        public CommandWrapperDerivedInput applyConfiguration(final CommandConfig.Input input) {
             return builder()
                     .id(this.id())
                     .name(this.name())
@@ -1132,9 +1184,27 @@ public abstract class Command {
                     .rawReplacementKey(this.rawReplacementKey())
                     .required(this.required())
                     .loadChildren(this.loadChildren())
-                    .defaultValue(commandInputConfiguration.defaultValue())
-                    .matcher(commandInputConfiguration.matcher())
-                    .userSettable(commandInputConfiguration.userSettable())
+                    .defaultValue(input.defaultValue())
+                    .matcher(input.matcher())
+                    .userSettable(input.userSettable())
+                    .build();
+        }
+
+        public CommandWrapperDerivedInput applyConfiguration(final CommandConfiguration.Input input) {
+            return builder()
+                    .id(this.id())
+                    .name(this.name())
+                    .type(this.type())
+                    .derivedFromWrapperInput(this.derivedFromWrapperInput())
+                    .derivedFromXnatObjectProperty(this.derivedFromXnatObjectProperty())
+                    .providesValueForCommandInput(this.providesValueForCommandInput())
+                    .providesFilesForCommandMount(this.providesFilesForCommandMount())
+                    .rawReplacementKey(this.rawReplacementKey())
+                    .required(this.required())
+                    .loadChildren(this.loadChildren())
+                    .defaultValue(input.defaultValue())
+                    .matcher(input.matcher())
+                    .userSettable(input.userSettable())
                     .build();
         }
 
@@ -1218,9 +1288,20 @@ public abstract class Command {
             return create(wrapperOutput.getId(), wrapperOutput.getName(), wrapperOutput.getCommandOutputName(), wrapperOutput.getWrapperInputName(), wrapperOutput.getType().getName(), wrapperOutput.getLabel());
         }
 
-        public CommandWrapperOutput applyConfiguration(final CommandOutputConfiguration commandOutputConfiguration) {
+        /**
+         * Use {@link #applyConfiguration(CommandConfiguration.Output)}
+         * @param output
+         * @return Configured command wrapper output
+         */
+        @Deprecated
+        public CommandWrapperOutput applyConfiguration(final CommandConfig.Output output) {
             return create(this.id(), this.name(), this.commandOutputName(), this.wrapperInputName(), this.type(),
-                    commandOutputConfiguration.label());
+                    output.label());
+        }
+
+        public CommandWrapperOutput applyConfiguration(final CommandConfiguration.Output output) {
+            return create(this.id(), this.name(), this.commandOutputName(), this.wrapperInputName(), this.type(),
+                    output.label());
         }
 
         @Nonnull

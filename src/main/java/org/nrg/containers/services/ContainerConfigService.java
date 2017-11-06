@@ -1,6 +1,6 @@
 package org.nrg.containers.services;
 
-import org.nrg.containers.model.configuration.CommandConfigurationInternal;
+import org.nrg.containers.model.configuration.CommandConfigInternal;
 
 public interface ContainerConfigService {
     String TOOL_ID = "container-service";
@@ -10,11 +10,11 @@ public interface ContainerConfigService {
     long getDefaultDockerHubId();
     void setDefaultDockerHubId(long hubId, String username, String reason);
 
-    void configureForSite(CommandConfigurationInternal commandConfiguration, long wrapperId, String username, String reason) throws CommandConfigurationException;
-    void configureForProject(CommandConfigurationInternal commandConfiguration, String project, long wrapperId, String username, String reason) throws CommandConfigurationException;
+    void configureForSite(CommandConfigInternal commandConfiguration, long wrapperId, String username, String reason) throws CommandConfigurationException;
+    void configureForProject(CommandConfigInternal commandConfiguration, String project, long wrapperId, String username, String reason) throws CommandConfigurationException;
 
-    CommandConfigurationInternal getSiteConfiguration(long wrapperId);
-    CommandConfigurationInternal getProjectConfiguration(String project, long wrapperId);
+    CommandConfigInternal getSiteConfiguration(long wrapperId);
+    CommandConfigInternal getProjectConfiguration(String project, long wrapperId);
 
     void deleteSiteConfiguration(long commandId, final String username) throws CommandConfigurationException;
     void deleteProjectConfiguration(String project, long wrapperId, final String username) throws CommandConfigurationException;

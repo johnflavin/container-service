@@ -5,7 +5,7 @@ import org.nrg.containers.model.command.auto.Command;
 import org.nrg.containers.model.command.auto.Command.CommandWrapper;
 import org.nrg.containers.model.command.auto.Command.ConfiguredCommand;
 import org.nrg.containers.model.command.auto.CommandSummaryForContext;
-import org.nrg.containers.model.configuration.CommandConfiguration;
+import org.nrg.containers.model.configuration.CommandConfig;
 import org.nrg.containers.model.configuration.ProjectEnabledReport;
 import org.nrg.containers.services.ContainerConfigService.CommandConfigurationException;
 import org.nrg.framework.exceptions.NotFoundException;
@@ -35,15 +35,15 @@ public interface CommandService {
     CommandWrapper updateWrapper(long commandId, CommandWrapper updates) throws CommandValidationException, NotFoundException;
     void deleteWrapper(long wrapperId);
 
-    void configureForSite(CommandConfiguration commandConfiguration, long wrapperId, boolean enable, String username, String reason) throws CommandConfigurationException, NotFoundException;
-    void configureForSite(CommandConfiguration commandConfiguration, long commandId, String wrapperName, boolean enable, String username, String reason) throws CommandConfigurationException, NotFoundException;
-    void configureForProject(CommandConfiguration commandConfiguration, String project, long wrapperId, boolean enable, String username, String reason) throws CommandConfigurationException, NotFoundException;
-    void configureForProject(CommandConfiguration commandConfiguration, String project, long commandId, String wrapperName, boolean enable, String username, String reason) throws CommandConfigurationException, NotFoundException;
+    void configureForSite(CommandConfig commandConfig, long wrapperId, boolean enable, String username, String reason) throws CommandConfigurationException, NotFoundException;
+    void configureForSite(CommandConfig commandConfig, long commandId, String wrapperName, boolean enable, String username, String reason) throws CommandConfigurationException, NotFoundException;
+    void configureForProject(CommandConfig commandConfig, String project, long wrapperId, boolean enable, String username, String reason) throws CommandConfigurationException, NotFoundException;
+    void configureForProject(CommandConfig commandConfig, String project, long commandId, String wrapperName, boolean enable, String username, String reason) throws CommandConfigurationException, NotFoundException;
 
-    CommandConfiguration getSiteConfiguration(long wrapperId) throws NotFoundException;
-    CommandConfiguration getSiteConfiguration(long commandId, String wrapperName) throws NotFoundException;
-    CommandConfiguration getProjectConfiguration(String project, long wrapperId) throws NotFoundException;
-    CommandConfiguration getProjectConfiguration(String project, long commandId, String wrapperName) throws NotFoundException;
+    CommandConfig getSiteConfiguration(long wrapperId) throws NotFoundException;
+    CommandConfig getSiteConfiguration(long commandId, String wrapperName) throws NotFoundException;
+    CommandConfig getProjectConfiguration(String project, long wrapperId) throws NotFoundException;
+    CommandConfig getProjectConfiguration(String project, long commandId, String wrapperName) throws NotFoundException;
     ConfiguredCommand getAndConfigure(long wrapperId) throws NotFoundException;
     ConfiguredCommand getAndConfigure(long commandId, String wrapperName) throws NotFoundException;
     ConfiguredCommand getAndConfigure(String project, long wrapperId) throws NotFoundException;

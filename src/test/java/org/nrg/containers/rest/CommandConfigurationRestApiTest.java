@@ -15,8 +15,10 @@ import org.nrg.containers.model.command.auto.Command.CommandInput;
 import org.nrg.containers.model.command.auto.Command.CommandOutput;
 import org.nrg.containers.model.command.auto.Command.CommandWrapper;
 import org.nrg.containers.model.command.entity.CommandEntity;
-import org.nrg.containers.model.configuration.CommandConfiguration;
-import org.nrg.containers.model.configuration.CommandConfigurationInternal;
+import org.nrg.containers.model.configuration.CommandConfig;
+import org.nrg.containers.model.configuration.CommandConfigInternal;
+import org.nrg.containers.model.configuration.CommandConfigInternal.Input;
+import org.nrg.containers.model.configuration.CommandConfigInternal.Output;
 import org.nrg.containers.services.CommandEntityService;
 import org.nrg.containers.services.ContainerConfigService;
 import org.nrg.framework.constants.Scope;
@@ -64,7 +66,7 @@ public class CommandConfigurationRestApiTest {
     private UserI mockAdmin;
     private Authentication authentication;
     private MockMvc mockMvc;
-    private CommandConfiguration commandConfiguration;
+    private CommandConfig commandConfig;
     private String commandConfigurationJson;
     private String commandConfigurationInternalJson;
     private String commandConfigurationInternalDisabledJson;
@@ -130,26 +132,26 @@ public class CommandConfigurationRestApiTest {
         when(mockCommandEntityService.getCommandByWrapperId(wrapperId)).thenReturn(CommandEntity.fromPojo(command));
 
         // Create a command configuration
-        final CommandConfigurationInternal commandConfigurationInternal = CommandConfigurationInternal.builder()
+        final CommandConfigInternal commandConfigInternal = CommandConfigInternal.builder()
                 .enabled(true)
                 .addInput(inputName,
-                        CommandConfigurationInternal.CommandInputConfiguration.builder()
+                        Input.builder()
                                 .defaultValue("whatever")
                                 .matcher("anything")
                                 .userSettable(true)
                                 .advanced(false)
                                 .build())
                 .addOutput(outputName,
-                        CommandConfigurationInternal.CommandOutputConfiguration.create("doesn't matter"))
+                        Output.create("doesn't matter"))
                 .build();
-        commandConfigurationInternalJson = mapper.writeValueAsString(commandConfigurationInternal);
-        final CommandConfigurationInternal commandConfigurationInternalDisabled =
-                commandConfigurationInternal.toBuilder().enabled(false).build();
+        commandConfigurationInternalJson = mapper.writeValueAsString(commandConfigInternal);
+        final CommandConfigInternal commandConfigInternalDisabled =
+                commandConfigInternal.toBuilder().enabled(false).build();
         commandConfigurationInternalDisabledJson =
-                mapper.writeValueAsString(commandConfigurationInternalDisabled);
+                mapper.writeValueAsString(commandConfigInternalDisabled);
 
-        commandConfiguration = CommandConfiguration.create(command, commandWrapper, commandConfigurationInternal);
-        commandConfigurationJson = mapper.writeValueAsString(commandConfiguration);
+        commandConfig = CommandConfig.create(command, commandWrapper, commandConfigInternal);
+        commandConfigurationJson = mapper.writeValueAsString(commandConfig);
 
         // mock out a org.nrg.config.Configuration
         mockConfig = mock(Configuration.class);
@@ -229,8 +231,8 @@ public class CommandConfigurationRestApiTest {
                         .getResponse()
                         .getContentAsString();
 
-        final CommandConfiguration commandConfigurationResponse = mapper.readValue(response, CommandConfiguration.class);
-        assertThat(commandConfigurationResponse, is(commandConfiguration));
+        final CommandConfig commandConfigResponse = mapper.readValue(response, CommandConfig.class);
+        assertThat(commandConfigResponse, is(commandConfig));
     }
 
     @Test
@@ -305,8 +307,8 @@ public class CommandConfigurationRestApiTest {
                         .getResponse()
                         .getContentAsString();
 
-        final CommandConfiguration commandConfigurationResponse = mapper.readValue(response, CommandConfiguration.class);
-        assertThat(commandConfigurationResponse, is(commandConfiguration));
+        final CommandConfig commandConfigResponse = mapper.readValue(response, CommandConfig.class);
+        assertThat(commandConfigResponse, is(commandConfig));
     }
 
     @Test
