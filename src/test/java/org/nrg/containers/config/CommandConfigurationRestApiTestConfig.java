@@ -3,10 +3,14 @@ package org.nrg.containers.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.mockito.Mockito;
 import org.nrg.config.services.ConfigService;
+import org.nrg.containers.model.configuration.CommandConfigurationEntity;
 import org.nrg.containers.rest.CommandConfigurationRestApi;
+import org.nrg.containers.services.CommandConfigurationEntityService;
+import org.nrg.containers.services.CommandConfigurationService;
 import org.nrg.containers.services.CommandEntityService;
 import org.nrg.containers.services.CommandService;
 import org.nrg.containers.services.ContainerConfigService;
+import org.nrg.containers.services.impl.CommandConfigurationServiceImpl;
 import org.nrg.containers.services.impl.CommandServiceImpl;
 import org.nrg.containers.services.impl.ContainerConfigServiceImpl;
 import org.nrg.framework.services.ContextService;
@@ -30,9 +34,10 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 public class CommandConfigurationRestApiTestConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public CommandConfigurationRestApi commandConfigurationRestApi(final CommandService commandService,
+                                                                   final CommandConfigurationService commandConfigurationService,
                                                                    final UserManagementServiceI userManagementServiceI,
                                                                    final RoleHolder roleHolder) {
-        return new CommandConfigurationRestApi(commandService, userManagementServiceI, roleHolder);
+        return new CommandConfigurationRestApi(commandService, commandConfigurationService, userManagementServiceI, roleHolder);
     }
 
     @Bean
@@ -55,6 +60,17 @@ public class CommandConfigurationRestApiTestConfig extends WebSecurityConfigurer
     @Bean
     public ConfigService configService() {
         return Mockito.mock(ConfigService.class);
+    }
+
+    @Bean
+    public CommandConfigurationEntityService mockCommandConfigurationEntityService() {
+        return Mockito.mock(CommandConfigurationEntityService.class);
+    }
+
+    @Bean
+    public CommandConfigurationService commandConfigurationService(final CommandConfigurationEntityService commandConfigurationEntityService,
+                                                                   final ContainerConfigService containerConfigService) {
+        return new CommandConfigurationServiceImpl(commandConfigurationEntityService, containerConfigService);
     }
 
     @Bean

@@ -19,6 +19,9 @@ import org.nrg.containers.model.configuration.CommandConfig;
 import org.nrg.containers.model.configuration.CommandConfigInternal;
 import org.nrg.containers.model.configuration.CommandConfigInternal.Input;
 import org.nrg.containers.model.configuration.CommandConfigInternal.Output;
+import org.nrg.containers.model.configuration.CommandConfiguration;
+import org.nrg.containers.model.configuration.CommandConfigurationEntity;
+import org.nrg.containers.services.CommandConfigurationEntityService;
 import org.nrg.containers.services.CommandEntityService;
 import org.nrg.containers.services.ContainerConfigService;
 import org.nrg.framework.constants.Scope;
@@ -67,6 +70,7 @@ public class CommandConfigurationRestApiTest {
     private Authentication authentication;
     private MockMvc mockMvc;
     private CommandConfig commandConfig;
+    private CommandConfiguration commandConfiguration;
     private String commandConfigurationJson;
     private String commandConfigurationInternalJson;
     private String commandConfigurationInternalDisabledJson;
@@ -92,6 +96,7 @@ public class CommandConfigurationRestApiTest {
     @Autowired private ConfigService mockConfigService;
     @Autowired private RoleServiceI mockRoleService;
     @Autowired private UserManagementServiceI mockUserManagementServiceI;
+    @Autowired private CommandConfigurationEntityService mockCommandConfigurationEntityService;
 
     @Rule public TemporaryFolder folder = new TemporaryFolder(new File("/tmp"));
 
@@ -153,6 +158,9 @@ public class CommandConfigurationRestApiTest {
         commandConfig = CommandConfig.create(command, commandWrapper, commandConfigInternal);
         commandConfigurationJson = mapper.writeValueAsString(commandConfig);
 
+        commandConfiguration = CommandConfiguration.create(commandConfig, wrapperId, project, true);
+        final CommandConfigurationEntity commandConfigurationEntity = CommandConfigurationEntity.fromPojo(commandConfiguration);
+
         // mock out a org.nrg.config.Configuration
         mockConfig = mock(Configuration.class);
         when(mockConfig.getContents()).thenReturn(commandConfigurationInternalJson);
@@ -160,6 +168,8 @@ public class CommandConfigurationRestApiTest {
         // when(mockConfigDisabled.getContents()).thenReturn(commandConfigurationInternalDisabledJson);
 
         configPath = String.format(ContainerConfigService.WRAPPER_CONFIG_PATH_TEMPLATE, wrapperId);
+
+        when(mockCommandConfigurationEntityService.create(Mockito.any(CommandConfigurationEntity.class))).thenReturn(commandConfigurationEntity);
 
         // REST paths
         final String siteConfigRestPathTemplate = "/commands/%d/wrappers/%s/config";

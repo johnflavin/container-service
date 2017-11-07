@@ -83,6 +83,21 @@ public abstract class CommandConfig {
         return builder.build();
     }
 
+    @Nonnull
+    public static CommandConfig create(final @Nonnull CommandConfiguration newStyleConfig) {
+        Builder builder = builder();
+
+        for (final CommandConfiguration.Input input : newStyleConfig.inputs()) {
+            builder.addInput(input.name(), Input.create(input));
+        }
+
+        for (final CommandConfiguration.Output output : newStyleConfig.outputs()) {
+            builder.addOutput(output.name(), Output.create(output));
+        }
+
+        return builder.build();
+    }
+
     public static Builder builder() {
         return new AutoValue_CommandConfig.Builder();
     }
@@ -190,6 +205,18 @@ public abstract class CommandConfig {
             return builder.build();
         }
 
+        static Input create(final CommandConfiguration.Input newStyleInput) {
+            return builder()
+                    .description("")
+                    .type("")
+                    .defaultValue(newStyleInput.defaultValue())
+                    .matcher(newStyleInput.matcher())
+                    .userSettable(newStyleInput.userSettable())
+                    .advanced(newStyleInput.advanced())
+                    .required(newStyleInput.required())
+                    .build();
+        }
+
         public static Builder builder() {
             return new AutoValue_CommandConfig_Input.Builder()
                     .userSettable(true)
@@ -238,6 +265,13 @@ public abstract class CommandConfig {
             }
 
             return builder.build();
+        }
+
+        @Nonnull
+        static Output create(final @Nonnull CommandConfiguration.Output newStyleOutput) {
+            return builder()
+                    .label(newStyleOutput.label())
+                    .build();
         }
 
         public static Builder builder() {
