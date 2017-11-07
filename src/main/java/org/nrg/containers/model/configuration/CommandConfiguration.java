@@ -31,6 +31,7 @@ public abstract class CommandConfiguration {
     @JsonProperty("inputs") public abstract ImmutableList<Input> inputs();
     @JsonProperty("outputs") public abstract ImmutableList<Output> outputs();
 
+    @Nonnull
     @JsonCreator
     public static CommandConfiguration create(@JsonProperty("id") final Long id,
                                               @JsonProperty("wrapper-id") final Long wrapperId,
@@ -88,6 +89,7 @@ public abstract class CommandConfiguration {
     //     return builder.build();
     // }
 
+    @Nonnull
     public static CommandConfiguration create(final @Nonnull CommandConfigurationEntity commandConfigurationEntity) {
         final CommandConfiguration.Builder builder = builder()
                 .id(commandConfigurationEntity.getId())
@@ -105,6 +107,7 @@ public abstract class CommandConfiguration {
         return builder.build();
     }
 
+    @Nonnull
     @SuppressWarnings("deprecation")
     public static CommandConfiguration create(final @Nonnull CommandConfigInternal legacyCommandConfig,
                                               final @Nonnull Long wrapperId,
@@ -125,9 +128,34 @@ public abstract class CommandConfiguration {
         return builder.build();
     }
 
+    @Nonnull
+    @SuppressWarnings("deprecation")
+    public static CommandConfiguration create(final @Nonnull CommandConfig legacyCommandConfig,
+                                              final @Nonnull Long wrapperId,
+                                              final String project,
+                                              final Boolean enabled) {
+        final CommandConfiguration.Builder builder = builder()
+                .wrapperId(wrapperId)
+                .project(project)
+                .enabled(enabled);
+
+        for (final Map.Entry<String, CommandConfig.Input> entry : legacyCommandConfig.inputs().entrySet()) {
+            builder.addInput(Input.create(entry.getKey(), entry.getValue()));
+        }
+
+        for (final Map.Entry<String, CommandConfig.Output> entry : legacyCommandConfig.outputs().entrySet()) {
+            builder.addOutput(Output.create(entry.getKey(), entry.getValue()));
+        }
+
+        return builder.build();
+    }
+
+    @Nonnull
     public static Builder builder() {
         return new AutoValue_CommandConfiguration.Builder();
     }
+
+    public abstract Builder toBuilder();
 
     @AutoValue.Builder
     public abstract static class Builder {
@@ -164,7 +192,9 @@ public abstract class CommandConfiguration {
         @Nullable @JsonProperty("advanced") public abstract Boolean advanced();
         @Nullable @JsonProperty("required") public abstract Boolean required();
 
+        @Nonnull
         @JsonCreator
+        @SuppressWarnings("unused")
         static Input create(@JsonProperty("id") final Long id,
                             @JsonProperty("name") final String name,
                             @JsonProperty("default-value") final String defaultValue,
@@ -237,6 +267,7 @@ public abstract class CommandConfiguration {
         //     return builder.build();
         // }
 
+        @Nonnull
         public static Input create(final @Nonnull CommandConfigurationEntityInput commandConfigurationEntityInput) {
             return builder()
                     .id(commandConfigurationEntityInput.getId())
@@ -248,6 +279,7 @@ public abstract class CommandConfiguration {
                     .build();
         }
 
+        @Nonnull
         public static Input create(final @Nonnull String name,
                                    final @Nonnull CommandConfigInternal.Input legacyInput) {
             return builder()
@@ -259,6 +291,20 @@ public abstract class CommandConfiguration {
                     .build();
         }
 
+        @Nonnull
+        @SuppressWarnings("deprecation")
+        public static Input create(final @Nonnull String name,
+                                   final @Nonnull CommandConfig.Input legacyInput) {
+            return builder()
+                    .name(name)
+                    .defaultValue(legacyInput.defaultValue())
+                    .matcher(legacyInput.matcher())
+                    .userSettable(legacyInput.userSettable())
+                    .advanced(legacyInput.advanced())
+                    .build();
+        }
+
+        @Nonnull
         public static Builder builder() {
             return new AutoValue_CommandConfiguration_Input.Builder()
                     .userSettable(true)
@@ -286,6 +332,7 @@ public abstract class CommandConfiguration {
         @Nullable @JsonProperty("name") public abstract String name();
         @Nullable @JsonProperty("label") public abstract String label();
 
+        @Nonnull
         @JsonCreator
         public static Output create(@JsonProperty("id") final Long id,
                                     @JsonProperty("name") final String name,
@@ -313,6 +360,7 @@ public abstract class CommandConfiguration {
         //     return builder.build();
         // }
 
+        @Nonnull
         public static Output create(final @Nonnull CommandConfigurationEntityOutput commandConfigurationEntityOutput) {
             return builder()
                     .id(commandConfigurationEntityOutput.getId())
@@ -321,6 +369,8 @@ public abstract class CommandConfiguration {
                     .build();
         }
 
+        @Nonnull
+        @SuppressWarnings("deprecation")
         public static Output create(final String name, final CommandConfigInternal.Output legacyOutput) {
             return builder()
                     .name(name)
@@ -328,6 +378,16 @@ public abstract class CommandConfiguration {
                     .build();
         }
 
+        @Nonnull
+        @SuppressWarnings("deprecation")
+        public static Output create(final String name, final CommandConfig.Output legacyOutput) {
+            return builder()
+                    .name(name)
+                    .label(legacyOutput.label())
+                    .build();
+        }
+
+        @Nonnull
         public static Builder builder() {
             return new AutoValue_CommandConfiguration_Output.Builder();
         }
