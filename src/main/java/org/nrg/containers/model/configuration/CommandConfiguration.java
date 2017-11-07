@@ -105,6 +105,26 @@ public abstract class CommandConfiguration {
         return builder.build();
     }
 
+    @SuppressWarnings("deprecation")
+    public static CommandConfiguration create(final @Nonnull CommandConfigInternal legacyCommandConfig,
+                                              final @Nonnull Long wrapperId,
+                                              final String project) {
+        final CommandConfiguration.Builder builder = builder()
+                .wrapperId(wrapperId)
+                .project(project)
+                .enabled(legacyCommandConfig.enabled());
+
+        for (final Map.Entry<String, CommandConfigInternal.Input> entry : legacyCommandConfig.inputs().entrySet()) {
+            builder.addInput(Input.create(entry.getKey(), entry.getValue()));
+        }
+
+        for (final Map.Entry<String, CommandConfigInternal.Output> entry : legacyCommandConfig.outputs().entrySet()) {
+            builder.addOutput(Output.create(entry.getKey(), entry.getValue()));
+        }
+
+        return builder.build();
+    }
+
     public static Builder builder() {
         return new AutoValue_CommandConfiguration.Builder();
     }
@@ -228,6 +248,17 @@ public abstract class CommandConfiguration {
                     .build();
         }
 
+        public static Input create(final @Nonnull String name,
+                                   final @Nonnull CommandConfigInternal.Input legacyInput) {
+            return builder()
+                    .name(name)
+                    .defaultValue(legacyInput.defaultValue())
+                    .matcher(legacyInput.matcher())
+                    .userSettable(legacyInput.userSettable())
+                    .advanced(legacyInput.advanced())
+                    .build();
+        }
+
         public static Builder builder() {
             return new AutoValue_CommandConfiguration_Input.Builder()
                     .userSettable(true)
@@ -287,6 +318,13 @@ public abstract class CommandConfiguration {
                     .id(commandConfigurationEntityOutput.getId())
                     .name(commandConfigurationEntityOutput.getName())
                     .label(commandConfigurationEntityOutput.getLabel())
+                    .build();
+        }
+
+        public static Output create(final String name, final CommandConfigInternal.Output legacyOutput) {
+            return builder()
+                    .name(name)
+                    .label(legacyOutput.label())
                     .build();
         }
 
