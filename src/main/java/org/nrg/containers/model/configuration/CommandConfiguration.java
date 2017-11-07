@@ -26,7 +26,7 @@ import java.util.Map;
 public abstract class CommandConfiguration {
     @JsonProperty("id") public abstract Long id();
     @JsonProperty("wrapper-id") @Nullable public abstract Long wrapperId();
-    @JsonProperty("project") public abstract String project();
+    @JsonProperty("project") @Nullable public abstract String project();
     @JsonProperty("enabled") @Nullable public abstract Boolean enabled();
     @JsonProperty("inputs") public abstract ImmutableList<Input> inputs();
     @JsonProperty("outputs") public abstract ImmutableList<Output> outputs();
@@ -152,7 +152,8 @@ public abstract class CommandConfiguration {
 
     @Nonnull
     public static Builder builder() {
-        return new AutoValue_CommandConfiguration.Builder();
+        return new AutoValue_CommandConfiguration.Builder()
+                .id(0L);
     }
 
     public abstract Builder toBuilder();
