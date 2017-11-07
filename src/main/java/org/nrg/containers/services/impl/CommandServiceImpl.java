@@ -218,6 +218,11 @@ public class CommandServiceImpl implements CommandService, InitializingBean {
     }
 
     @Override
+    public long getWrapperId(final long commandId, final String wrapperName) throws NotFoundException {
+        return commandEntityService.getWrapperId(commandId, wrapperName);
+    }
+
+    @Override
     @Nonnull
     @Transactional
     public CommandWrapper updateWrapper(final long commandId, final @Nonnull CommandWrapper toUpdate) throws CommandValidationException, NotFoundException {
@@ -622,10 +627,6 @@ public class CommandServiceImpl implements CommandService, InitializingBean {
     @Nonnull
     private CommandWrapper toPojo(@Nonnull final CommandWrapperEntity commandWrapperEntity) {
         return CommandWrapper.create(commandWrapperEntity);
-    }
-
-    private long getWrapperId(final long commandId, final String wrapperName) throws NotFoundException {
-        return commandEntityService.getWrapperId(commandId, wrapperName);
     }
 
     @Nonnull
